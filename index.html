@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Для Индиры 💘</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:system-ui;
+  background:linear-gradient(180deg,#12121a,#1d1324);
+  color:white;
+  overflow-x:hidden;
+}
+
+h1{
+  text-align:center;
+  padding:30px 15px;
+  font-size:clamp(24px,5vw,42px);
+  animation:fade 1s ease forwards;
+}
+
+.slider{
+  position:relative;
+  max-width:900px;
+  margin:0 auto;
+  overflow:hidden;
+  border-radius:20px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+
+.slides{
+  display:flex;
+  transition:transform .6s ease;
+}
+
+.slide{
+  min-width:100%;
+  position:relative;
+  cursor:pointer;
+}
+
+.slide img{
+  width:100%;
+  height:550px;
+  object-fit:cover;
+}
+
+.caption{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  background:rgba(0,0,0,.5);
+  padding:12px 16px;
+  border-radius:12px;
+  backdrop-filter:blur(6px);
+}
+
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:32px;
+  background:rgba(0,0,0,.4);
+  padding:10px 15px;
+  cursor:pointer;
+  user-select:none;
+}
+
+.left{left:10px;}
+.right{right:10px;}
+
+.dots{text-align:center;margin:15px 0;}
+.dot{
+  display:inline-block;
+  width:10px;height:10px;
+  margin:6px;background:#777;
+  border-radius:50%;
+  cursor:pointer;
+  transition:.3s;
+}
+.dot.active{background:#ff4d94;transform:scale(1.3);}
+
+button{
+  display:block;
+  margin:20px auto;
+  padding:14px 20px;
+  font-size:18px;
+  border:none;
+  border-radius:15px;
+  cursor:pointer;
+  background:#ff4d94;
+  color:white;
+  transition:.2s;
+}
+button:hover{transform:scale(1.05);}
+
+.final{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  opacity:0;
+  pointer-events:none;
+  transition:.5s;
+}
+
+.final.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.final h2{
+  font-size:clamp(22px,5vw,40px);
+  animation:fade 1s ease forwards;
+}
+
+.music-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:white;
+  color:black;
+  padding:10px 15px;
+  border-radius:30px;
+  font-size:14px;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+
+.modal.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modal img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:15px;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ===== Intro envelope screen ===== */
+.intro{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(900px 600px at 30% 20%, rgba(255,77,148,.15), transparent 60%),
+             radial-gradient(700px 500px at 80% 70%, rgba(255,255,255,.06), transparent 60%),
+             linear-gradient(180deg,#12121a,#1d1324);
+  transition:opacity .7s ease, transform .7s ease;
+}
+
+.intro.hide{
+  opacity:0;
+  transform:scale(1.02);
+  pointer-events:none;
+}
+
+.intro-inner{
+  width:min(520px, 92vw);
+  text-align:center;
+}
+
+.intro-title{
+  margin-top:18px;
+  font-size:clamp(18px, 4.2vw, 26px);
+  color:rgba(255,255,255,.92);
+  opacity:.9;
+}
+
+.intro-sub{
+  margin-top:10px;
+  font-size:clamp(14px, 3.6vw, 18px);
+  line-height:1.55;
+  color:rgba(255,255,255,.75);
+}
+
+.envelope-wrap{
+  position:relative;
+  width:min(360px, 84vw);
+  height:240px;
+  margin:0 auto;
+  cursor:pointer;
+  user-select:none;
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,.55));
+  transform: translateY(6px);
+  animation:introFloat 2.8s ease-in-out infinite;
+}
+
+@keyframes introFloat{
+  0%,100%{ transform: translateY(6px); }
+  50%{ transform: translateY(-6px); }
+}
+
+/* Envelope body */
+.envelope{
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  overflow:hidden;
+}
+
+/* Paper letter */
+.letter{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:18px;
+  height:170px;
+  border-radius:14px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  transform: translateY(90px);
+  transition: transform .7s cubic-bezier(.2,.9,.2,1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  text-align:center;
+  color:rgba(255,255,255,.92);
+  backdrop-filter: blur(8px);
+}
+
+.letter b{
+  display:block;
+  font-size:18px;
+  margin-bottom:8px;
+}
+
+.letter span{
+  display:block;
+  color:rgba(255,255,255,.78);
+  line-height:1.55;
+}
+
+/* Envelope flap */
+.flap{
+  position:absolute;
+  left:0; right:0;
+  top:0;
+  height:55%;
+  transform-origin: top;
+  background:linear-gradient(180deg, rgba(255,77,148,.18), rgba(255,255,255,.06));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transition: transform .7s cubic-bezier(.2,.9,.2,1);
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+/* Bottom triangles (just decor) */
+.bottom{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:70%;
+  background:rgba(0,0,0,.10);
+  clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* Hint */
+.tap-hint{
+  margin-top:14px;
+  font-size:13px;
+  color:rgba(255,255,255,.55);
+}
+
+/* Open state */
+.envelope-wrap.open .flap{
+  transform: rotateX(170deg);
+}
+.envelope-wrap.open .letter{
+  transform: translateY(0);
+}
+
+/* Heart burst particles (intro) */
+.burst{
+  position:absolute;
+  left:50%;
+  top:55%;
+  width:10px; height:10px;
+  transform: translate(-50%,-50%);
+  pointer-events:none;
+}
+
+.pheart{
+  position:absolute;
+  left:0; top:0;
+  transform: translate(-50%,-50%);
+  font-size:18px;
+  opacity:0;
+  animation: popHeart 900ms ease forwards;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+}
+
+@keyframes popHeart{
+  0%{ opacity:0; transform: translate(-50%,-50%) scale(.6); }
+  15%{ opacity:1; }
+  100%{ opacity:0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); }
+}
+
+/* Hide main content until intro ends */
+#mainContent{
+  opacity:0;
+  transform: translateY(10px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+#mainContent.show{
+  opacity:1;
+  transform: translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="hearts"></canvas>
+<!-- INTRO SCREEN -->
+<div class="intro" id="intro">
+  <div class="intro-inner">
+    <div class="envelope-wrap" id="envelope">
+      <div class="envelope"></div>
+      <div class="flap"></div>
+      <div class="bottom"></div>
+
+      <div class="letter">
+        <div>
+          <b>Индира, я тебя люблю 💖</b>
+          <span>
+            Я не знаю никого лучше тебя.<br>
+            Ты - мой самый тёплый человек.
+          </span>
+        </div>
+      </div>
+
+      <div class="burst" id="burst"></div>
+    </div>
+
+    <div class="tap-hint">Нажми на конверт ✉️</div>
+  </div>
+</div>
+
+<div id="mainContent">
+<h1>Индира, это наша история 💞</h1>
+
+<div class="slider">
+  <div class="slides" id="slides">
+
+    <div class="slide"><img src="img/photo1.jpg"><div class="caption">Первый момент ❤️</div></div>
+    <div class="slide"><img src="img/photo2.jpg"><div class="caption">Ты здесь невероятная 😍</div></div>
+    <div class="slide"><img src="img/photo3.jpg"><div class="caption">Я понял, что люблю</div></div>
+    <div class="slide"><img src="img/photo4.jpg"><div class="caption">Наш самый тёплый день</div></div>
+    <div class="slide"><img src="img/photo6.jpg"><div class="caption">И это только начало...</div></div>
+
+  </div>
+
+  <div class="arrow left" onclick="prev()">❮</div>
+  <div class="arrow right" onclick="next()">❯</div>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<button onclick="showFinal()">Я люблю тебя 💘</button>
+
+<div class="final" id="final">
+  <h2>Индира…<br>Я выбираю тебя. Каждый день. 💖</h2>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <img id="modalImg">
+</div>
+
+<button class="music-btn" onclick="toggleMusic()">🎵 Музыка</button>
+
+<audio id="music" loop>
+  <source src="img/music.mp3" type="audio/mpeg">
+</audio>
+</div>
+<script>
+const slides=document.getElementById("slides");
+const total=slides.children.length;
+const dots=document.getElementById("dots");
+let index=0;
+
+for(let i=0;i<total;i++){
+  let d=document.createElement("span");
+  d.className="dot";
+  d.onclick=()=>goTo(i);
+  dots.appendChild(d);
+}
+
+function update(){
+  slides.style.transform="translateX(-"+index*100+"%)";
+  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active",i===index));
+}
+
+function next(){index=(index+1)%total;update();}
+function prev(){index=(index-1+total)%total;update();}
+function goTo(i){index=i;update();}
+
+setInterval(next,4000);
+update();
+
+let startX=0;
+slides.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+slides.addEventListener("touchend",e=>{
+  let diff=e.changedTouches[0].clientX-startX;
+  if(diff>50) prev();
+  if(diff<-50) next();
+});
+
+document.querySelectorAll(".slide img").forEach(img=>{
+  img.onclick=()=>{
+    document.getElementById("modalImg").src=img.src;
+    document.getElementById("modal").classList.add("show");
+  }
+});
+
+function closeModal(){document.getElementById("modal").classList.remove("show");}
+
+function showFinal(){document.getElementById("final").classList.add("show");}
+
+function toggleMusic(){
+  const music=document.getElementById("music");
+  if(music.paused){music.play();}
+  else{music.pause();}
+}
+
+const canvas=document.getElementById("hearts");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let hearts=[];
+for(let i=0;i<40;i++){
+  hearts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*6+4,s:Math.random()*1+0.5});
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="rgba(255,100,150,.7)";
+  hearts.forEach(h=>{
+    ctx.beginPath();
+    ctx.arc(h.x,h.y,h.r,0,Math.PI*2);
+    ctx.fill();
+    h.y-=h.s;
+    if(h.y<0){h.y=innerHeight;h.x=Math.random()*innerWidth;}
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ===== Intro logic =====
+const intro = document.getElementById("intro");
+const envelope = document.getElementById("envelope");
+const burst = document.getElementById("burst");
+const mainContent = document.getElementById("mainContent");
+
+let opened = false;
+
+function heartBurst(count = 18){
+  const hearts = ["💖","💘","💗","💕","💞","❤️"];
+  for(let i=0;i<count;i++){
+    const h = document.createElement("div");
+    h.className = "pheart";
+    h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+
+    const dx = (Math.random()*260 - 130).toFixed(0) + "px";
+    const dy = (Math.random()*240 - 140).toFixed(0) + "px";
+    h.style.setProperty("--dx", dx);
+    h.style.setProperty("--dy", dy);
+
+    // slight random delay
+    h.style.animationDelay = (Math.random()*120).toFixed(0) + "ms";
+    burst.appendChild(h);
+
+    setTimeout(()=>h.remove(), 1000);
+  }
+}
+
+envelope.addEventListener("click", () => {
+  if(opened) return;
+  opened = true;
+
+  envelope.classList.add("open");
+  heartBurst(22);
+  // автозапуск музыки после клика (браузер разрешит)
+const music = document.getElementById("music");
+if(music && music.paused){
+  music.play().catch(()=>{});
+}
+
+
+  // через ~1.3 сек скрываем интро и показываем основной контент
+  setTimeout(() => {
+    intro.classList.add("hide");
+    mainContent.classList.add("show");
+  }, 1300);
+
+  // полностью убираем интро из DOM (чтобы не мешало)
+  setTimeout(() => {
+    intro.remove();
+  }, 2200);
+});
+
+// На всякий: пока интро не ушло — основное не видно
+window.addEventListener("load", () => {
+  // если вдруг нужно: можно авто-показать mainContent после таймаута
+  // но оставим как есть: только после клика
+});
+</script>
+
+</body>
+</html>
